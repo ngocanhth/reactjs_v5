@@ -35,7 +35,12 @@ function ListPage(props) {
   const classes = useStyles();
 
   const history = useHistory();
+
+  // location la 1 object khi url thay doi thi object location cung thay doi do do neu dat trong filter se bij thay doi lap vo han
+
   const location = useLocation();
+  const queryParams = queryString.parse(location.search);
+
   // const queryParams = useMemo(() => {
   //   const params = queryString.parse(location.search);
 
@@ -56,12 +61,23 @@ function ListPage(props) {
     total: 10,
     page: 1,
   });
-  const [loading, setLoading] = useState(true);
-  const [filters, setfilters] = useState({
-      _limit: 12,
-      _page: 1,
-      _sort: 'salePrice:ASC',
-  });
+
+    const [loading, setLoading] = useState(true);
+  
+  // const [filters, setfilters] = useState({
+  //     _limit: 12,
+  //     _page: 1,
+  //     _sort: 'salePrice:ASC',
+  // });
+
+
+  const [filters, setfilters] = useState(() => ({
+    ...queryParams,
+    _page: Number.parseInt(queryParams._page) || 1,
+    _limit: Number.parseInt(queryParams._limit) || 12,
+    _sort: queryParams._sort || 'salePrice:ASC',
+  }));
+
 
   useEffect(() => {
     try {
@@ -75,6 +91,8 @@ function ListPage(props) {
     }
 
   }, [history, filters]);
+
+  // object history khong doi ma chi thay doi value ben trong no do do khong bi rerender lai chi co filters thay doi
 
   useEffect(() => {
     (async () => {
