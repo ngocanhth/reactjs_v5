@@ -39,20 +39,21 @@ function ListPage(props) {
   // location la 1 object khi url thay doi thi object location cung thay doi do do neu dat trong filter se bij thay doi lap vo han
 
   const location = useLocation();
-  const queryParams = queryString.parse(location.search);
 
-  // const queryParams = useMemo(() => {
-  //   const params = queryString.parse(location.search);
+  // const queryParams = queryString.parse(location.search);
 
-  //   return {
-  //     ...params,
-  //     _page: Number.parseInt(params._page) || 1,
-  //     _limit: Number.parseInt(params._limit) || 12,
-  //     _sort: params._sort || 'salePrice:ASC',
-  //     isPromotion: params.isPromotion === 'true',
-  //     isFreeShip: params.isFreeShip === 'true',
-  //   };
-  // }, [location.search]);
+  const queryParams = useMemo(() => {
+    const params = queryString.parse(location.search);
+
+    return {
+      ...params,
+      _page: Number.parseInt(params._page) || 1,
+      _limit: Number.parseInt(params._limit) || 12,
+      _sort: params._sort || 'salePrice:ASC',
+      isPromotion: params.isPromotion === 'true',
+      isFreeShip: params.isFreeShip === 'true',
+    };
+  }, [location.search]);
 
 
   const [productList, setProductList] = useState([]);
@@ -71,26 +72,26 @@ function ListPage(props) {
   // });
 
 
-  const [filters, setfilters] = useState(() => ({
-    ...queryParams,
-    _page: Number.parseInt(queryParams._page) || 1,
-    _limit: Number.parseInt(queryParams._limit) || 12,
-    _sort: queryParams._sort || 'salePrice:ASC',
-  }));
+  // const [filters, setfilters] = useState(() => ({
+  //   ...queryParams,
+  //   _page: Number.parseInt(queryParams._page) || 1,
+  //   _limit: Number.parseInt(queryParams._limit) || 12,
+  //   _sort: queryParams._sort || 'salePrice:ASC',
+  // }));
 
 
-  useEffect(() => {
-    try {
-      history.push( {
-        pathname: history.location.pathname,
-        search: queryString.stringify(filters),
-      }
-      )
-    } catch (error) {
-      console.log('Failed to fetch product list: ', error);
-    }
+  // useEffect(() => {
+  //   try {
+  //     history.push( {
+  //       pathname: history.location.pathname,
+  //       search: queryString.stringify(filters),
+  //     }
+  //     )
+  //   } catch (error) {
+  //     console.log('Failed to fetch product list: ', error);
+  //   }
 
-  }, [history, filters]);
+  // }, [history, filters]);
 
   // object history khong doi ma chi thay doi value ben trong no do do khong bi rerender lai chi co filters thay doi
 
@@ -101,9 +102,9 @@ function ListPage(props) {
         const response = await productApi.getAll({_page: 1, _limit: 12});
         // console.log({response});
 
-        console.log('Khi load trang lan dau  và change params filter se la: ',filters);
+        // console.log('Khi load trang lan dau  và change params filter se la: ',filters);
 
-        const { data, pagination } = await productApi.getAll(filters);
+        const { data, pagination } = await productApi.getAll(queryParams);
 
         console.log('Sau khi truyen new param filter se la: ', {pagination});
 
@@ -115,18 +116,18 @@ function ListPage(props) {
 
       setLoading(false);
     })();
-  }, [filters]);
+  }, [queryParams]);
 
     const handlePageChange = (e, page) => {
-        // const filters = {
-        //     ...queryParams,
-        //     _page: page,
-        // };
-
-        setfilters((prevFilters => ({
-            ...prevFilters,
+        const filters = {
+            ...queryParams,
             _page: page,
-        })));
+        };
+
+        // setfilters((prevFilters => ({
+        //     ...prevFilters,
+        //     _page: page,
+        // })));
 
         history.push({
         pathname: history.location.pathname,
@@ -135,15 +136,15 @@ function ListPage(props) {
     };
 
     const handleSortChange = (newSortValue) => {
-        // const filters = {
-        // ...queryParams,
-        // _sort: newSortValue,
-        // };
+        const filters = {
+        ...queryParams,
+        _sort: newSortValue,
+        };
         
-        setfilters((prevFilters => ({
-            ...prevFilters,
-            _sort: newSortValue,
-        })));
+        // setfilters((prevFilters => ({
+        //     ...prevFilters,
+        //     _sort: newSortValue,
+        // })));
 
         // pathname la phần sau base url:  /products
 
@@ -163,15 +164,15 @@ function ListPage(props) {
     };
 
     const handleFiltersChange = (newFilters) => {
-          // const filters = {
-          // ...queryParams,
-          // ...newFilters,
-          // };
+          const filters = {
+          ...queryParams,
+          ...newFilters,
+          };
 
-          setfilters((prevFilters => ({
-              ...prevFilters,
-              ...newFilters,
-          })));
+          // setfilters((prevFilters => ({
+          //     ...prevFilters,
+          //     ...newFilters,
+          // })));
 
         history.push({
           pathname: history.location.pathname,
@@ -183,7 +184,7 @@ function ListPage(props) {
 
     console.log('New Filter sau khi pass len component cha: ', newFilters);
 
-    setfilters(newFilters);
+    // setfilters(newFilters);
 
     history.push({
       pathname: history.location.pathname,
@@ -197,21 +198,22 @@ function ListPage(props) {
         <Grid container spacing={1}>
           <Grid item className={classes.left}>
             <Paper elevation={0}>
-                {/* <ProductFilters filters={queryParams} onChange={handleFiltersChange} /> */}
+                <ProductFilters filters={queryParams} onChange={handleFiltersChange} />
 
-                {console.log('Fillter ban dau tu thang cha truyen xuong: ', filters)}
+                {/* {console.log('Fillter ban dau tu thang cha truyen xuong: ', filters)} */}
 
-                <ProductFilters filters={filters} onChange={handleFiltersChange} />
+                {/* <ProductFilters filters={filters} onChange={handleFiltersChange} /> */}
             </Paper>
           </Grid>
 
           <Grid item className={classes.right}>
             <Paper elevation={0}>
-            <ProductSort currentSort={filters._sort} onChange={handleSortChange} />
-              {/* <ProductSort currentSort={queryParams._sort} onChange={handleSortChange} />
-                <FilterViewer filters={queryParams} onChange={setNewFilters} /> */}
+            {/* <ProductSort currentSort={filters._sort} onChange={handleSortChange} /> */}
 
-                <FilterViewer filters={filters} onChange={setNewFilters} /> 
+              <ProductSort currentSort={queryParams._sort} onChange={handleSortChange} />
+              <FilterViewer filters={queryParams} onChange={setNewFilters} />
+
+                {/* <FilterViewer filters={filters} onChange={setNewFilters} />  */}
 
               {loading ? <ProductSkeletonList length={12} /> : <ProductList data={productList} />}
     
