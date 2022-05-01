@@ -11,13 +11,10 @@ ClearFilters.propTypes = {
 
 function ClearFilters(onClick = null) {
     const history = useHistory();
-    const handleClearFilters = (onClick) => {
-       if(!onClick) return;
-
+    const handleClearFilters = () => {
         history.replace({
-        search: '',
-      });
-
+          search: '',
+        });
       };
     
     return (

@@ -182,9 +182,9 @@ function ListPage(props) {
     };
 
     const handleClearFilters = () => {
-      // history.replace({
-      //   search: '',
-      // });
+      history.replace({
+        search: '',
+      });
     };
 
   const setNewFilters = (newFilters) => {
