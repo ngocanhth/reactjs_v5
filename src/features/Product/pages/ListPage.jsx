@@ -4,6 +4,7 @@ import productApi from 'api/productApi';
 import queryString from 'query-string';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
+import ClearFilters from '../components/ClearFilters';
 import FilterViewer from '../components/FilterViewer';
 import ProductFilters from '../components/ProductFilters';
 import ProductList from '../components/ProductList';
@@ -42,7 +43,7 @@ function ListPage(props) {
 
   // const queryParams = queryString.parse(location.search);
 
-  const queryParams = useMemo(() => {
+  let queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
 
     return {
@@ -180,6 +181,12 @@ function ListPage(props) {
         });
     };
 
+    const handleClearFilters = () => {
+      // history.replace({
+      //   search: '',
+      // });
+    };
+
   const setNewFilters = (newFilters) => {
 
     console.log('New Filter sau khi pass len component cha: ', newFilters);
@@ -203,6 +210,12 @@ function ListPage(props) {
                 {/* {console.log('Fillter ban dau tu thang cha truyen xuong: ', filters)} */}
 
                 {/* <ProductFilters filters={filters} onChange={handleFiltersChange} /> */}
+
+                 <ClearFilters onClick={handleClearFilters} /> 
+
+                {/* <div onClick={handleClearFilters}>
+                  Clear filters
+                </div> */}
             </Paper>
           </Grid>
 
